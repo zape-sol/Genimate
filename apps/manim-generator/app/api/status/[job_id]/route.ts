@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(request: NextRequest, { params }: any) {
   try {
     const { job_id } = params;
-    const manimServiceUrl = process.env.MANIM_SERVICE_URL || "http://localhost:8080";
+    const manimServiceUrl = process.env.NEXT_PUBLIC_PROD_API_URL || "http://localhost:8080";
     const statusUrl = `${manimServiceUrl}/status/${job_id}`;
 
     const manimResponse = await fetch(statusUrl);
