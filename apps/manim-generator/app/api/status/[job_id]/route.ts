@@ -2,10 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { job_id: string } }
+  context: { params: { job_id: string } }
 ) {
   try {
-    const { job_id } = await params;
+    const { job_id } = context.params;
     const manimServiceUrl = process.env.MANIM_SERVICE_URL || "http://localhost:8080";
     const statusUrl = `${manimServiceUrl}/status/${job_id}`;
 
