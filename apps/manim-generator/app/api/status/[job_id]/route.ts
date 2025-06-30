@@ -1,9 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: Record<string, string> }
-) {
+export async function GET(request: NextRequest, { params }: any) {
   try {
     const { job_id } = params;
     const manimServiceUrl = process.env.MANIM_SERVICE_URL || "http://localhost:8080";
