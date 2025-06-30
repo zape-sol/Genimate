@@ -27,6 +27,14 @@ out/
 build
 dist
 
+# Python virtual environment
+envname/
+
+# Temporary notes
+fix*.md
+newProductionDeployLike.md
+production.md
+tillnow.md
 
 # Debug
 npm-debug.log*

@@ -1,0 +1,6 @@
+# This file is used internally by FFMPEG.
+file 'file:/home/zape777/Documents/Genimate/apps/manim-generator/public/animations/videos/animation/480p15/partial_movie_files/WaveEffect/1185818338_3380804142_797758683.mp4'
+file 'file:/home/zape777/Documents/Genimate/apps/manim-generator/public/animations/videos/animation/480p15/partial_movie_files/WaveEffect/624642324_4217992463_311511172.mp4'
+file 'file:/home/zape777/Documents/Genimate/apps/manim-generator/public/animations/videos/animation/480p15/partial_movie_files/WaveEffect/624642324_1794160027_1078702220.mp4'
+file 'file:/home/zape777/Documents/Genimate/apps/manim-generator/public/animations/videos/animation/480p15/partial_movie_files/WaveEffect/624642324_4217992463_616045933.mp4'
+file 'file:/home/zape777/Documents/Genimate/apps/manim-generator/public/animations/videos/animation/480p15/partial_movie_files/WaveEffect/624642324_4227923644_3435832211.mp4'

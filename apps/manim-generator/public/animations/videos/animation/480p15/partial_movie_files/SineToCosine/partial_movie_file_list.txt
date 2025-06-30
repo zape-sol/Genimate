@@ -1,0 +1,5 @@
+# This file is used internally by FFMPEG.
+file 'file:/home/zape777/Documents/Genimate/apps/manim-generator/public/animations/videos/animation/480p15/partial_movie_files/SineToCosine/1185818338_2413875111_223132457.mp4'
+file 'file:/home/zape777/Documents/Genimate/apps/manim-generator/public/animations/videos/animation/480p15/partial_movie_files/SineToCosine/624642324_4217992463_160134612.mp4'
+file 'file:/home/zape777/Documents/Genimate/apps/manim-generator/public/animations/videos/animation/480p15/partial_movie_files/SineToCosine/624642324_2909966352_2635582994.mp4'
+file 'file:/home/zape777/Documents/Genimate/apps/manim-generator/public/animations/videos/animation/480p15/partial_movie_files/SineToCosine/624642324_4217992463_1689840986.mp4'

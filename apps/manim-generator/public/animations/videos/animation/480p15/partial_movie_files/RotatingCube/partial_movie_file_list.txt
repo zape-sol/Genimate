@@ -1,0 +1,7 @@
+# This file is used internally by FFMPEG.
+file 'file:/home/zape777/Documents/Genimate/apps/manim-generator/public/animations/videos/animation/480p15/partial_movie_files/RotatingCube/1185818338_3465338277_2284181435.mp4'
+file 'file:/home/zape777/Documents/Genimate/apps/manim-generator/public/animations/videos/animation/480p15/partial_movie_files/RotatingCube/624642324_4217992463_728716386.mp4'
+file 'file:/home/zape777/Documents/Genimate/apps/manim-generator/public/animations/videos/animation/480p15/partial_movie_files/RotatingCube/624642324_2381245278_1282678135.mp4'
+file 'file:/home/zape777/Documents/Genimate/apps/manim-generator/public/animations/videos/animation/480p15/partial_movie_files/RotatingCube/624642324_4217992463_2244131517.mp4'
+file 'file:/home/zape777/Documents/Genimate/apps/manim-generator/public/animations/videos/animation/480p15/partial_movie_files/RotatingCube/624642324_79333474_3969814034.mp4'
+file 'file:/home/zape777/Documents/Genimate/apps/manim-generator/public/animations/videos/animation/480p15/partial_movie_files/RotatingCube/624642324_4217992463_580630325.mp4'
