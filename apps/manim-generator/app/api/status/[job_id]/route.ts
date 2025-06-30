@@ -26,4 +26,4 @@ export async function GET(request: NextRequest, { params }: any) {
       { status: 500 }
     );
   }
-}
+} 
