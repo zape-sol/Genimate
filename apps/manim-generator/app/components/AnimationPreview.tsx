@@ -11,13 +11,14 @@ interface AnimationPreviewProps {
   isLoading: boolean
   error: string | null
   videoPath: string
-  progress: number
+  duration: number | null
+  totalDuration: number | null
   showCode: boolean
   setShowCode: (value: boolean) => void
   setError: (value: string | null) => void
 }
 
-export function AnimationPreview({ isLoading, error, videoPath, progress, showCode, setShowCode, setError }: AnimationPreviewProps) {
+export function AnimationPreview({ isLoading, error, videoPath, duration, totalDuration, showCode, setShowCode, setError }: AnimationPreviewProps) {
   return (
     <Card className="border-zinc-800 bg-zinc-950/50 backdrop-blur-sm flex-1">
       <CardHeader className="pb-4">
@@ -43,11 +44,9 @@ export function AnimationPreview({ isLoading, error, videoPath, progress, showCo
             </div>
 
             <div className="w-full max-w-sm space-y-2">
-              <div className="flex justify-between text-sm">
-                <span className="text-zinc-400">Progress</span>
-                <span className="text-blue-400 font-medium">{progress}%</span>
+              <div className="flex justify-center text-sm">
+                <span className="text-zinc-400">This may take a moment...</span>
               </div>
-              <Progress value={progress} className="h-2 bg-zinc-800" />
             </div>
           </div>
         )}
@@ -83,9 +82,19 @@ export function AnimationPreview({ isLoading, error, videoPath, progress, showCo
                 src={videoPath}
                 controls
                 className="w-full h-full object-contain"
-                poster="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMDkwOTBiIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgZmlsbD0iIzUyNTI1MiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkFuaW1hdGlvbiBSZWFkeTwvdGV4dD48L3N2Zz4="
+                poster="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaWdodD0iMzAwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiMwOTA5MGIiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE4IiBmaWxsPSIjNTI1MjUyIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+QW5pbWF0aW9uIFJlYWR5PC90ZXh0Pjwvc3ZnPg=="
               />
             </div>
+            {duration !== null && (
+              <p className="text-sm text-zinc-400 text-center">
+                Backend rendering time: {duration.toFixed(2)} seconds.
+              </p>
+            )}
+            {totalDuration !== null && (
+              <p className="text-sm text-zinc-400 text-center">
+                Total time to display: {totalDuration.toFixed(2)} seconds.
+              </p>
+            )}
 
             <Button
               onClick={() => setShowCode(!showCode)}

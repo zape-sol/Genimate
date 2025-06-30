@@ -15,8 +15,10 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null)
   const [showCode, setShowCode] = useState(false)
   const [jobId, setJobId] = useState<string | null>(null)
-  const [progress, setProgress] = useState(0)
+  const [duration, setDuration] = useState<number | null>(null)
+  const [totalDuration, setTotalDuration] = useState<number | null>(null)
   const [description, setDescription] = useState("")
+  const [startTime, setStartTime] = useState<number | null>(null)
 
   const examples = [
     {
@@ -57,14 +59,19 @@ export default function Home() {
         const response = await fetch(`/api/status/${jobId}`)
         const data = await response.json()
 
-        setProgress(data.progress || 0)
+        
 
         if (data.status === "COMPLETED") {
           setCode(data.code)
           setVideoPath(data.video_path)
+          setDuration(data.duration || null)
           setIsLoading(false)
           setJobId(null)
           clearInterval(interval)
+          console.log("Job completed data:", data);
+          if (startTime) {
+            setTotalDuration((Date.now() - startTime) / 1000);
+          }
         } else if (data.status === "FAILED") {
           setError(data.details || "Failed to render animation")
           setIsLoading(false)
@@ -89,7 +96,9 @@ export default function Home() {
     setVideoPath("")
     setShowCode(false)
     setJobId(null)
-    setProgress(0)
+    setDuration(null)
+    setTotalDuration(null)
+    setStartTime(Date.now())
 
     try {
       const response = await fetch("/api/generate", {
@@ -162,7 +171,8 @@ export default function Home() {
               isLoading={isLoading}
               error={error}
               videoPath={videoPath}
-              progress={progress}
+              duration={duration}
+              totalDuration={totalDuration}
               showCode={showCode}
               setShowCode={setShowCode}
               setError={setError}

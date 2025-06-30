@@ -9,6 +9,7 @@ import logging
 import re
 import uuid
 from enum import Enum
+import time
 from typing import Dict, Optional
 
 IS_PROD = os.environ.get("IS_PROD", "false").lower() == "true"
@@ -42,16 +43,20 @@ class Job(BaseModel):
     progress: int = 0
     video_path: Optional[str] = None
     details: Optional[str] = None
+    start_time: Optional[float] = None
+    duration: Optional[float] = None
 
 jobs: Dict[str, Job] = {}
 
 def render_animation_in_background(job_id: str, code: str):
     jobs[job_id].status = JobStatus.PROCESSING
+    jobs[job_id].start_time = time.time()
     
     class_name_match = re.search(r"class\s+(\w+)\((?:ThreeD)?Scene\):", code)
     if not class_name_match:
         jobs[job_id].status = JobStatus.FAILED
         jobs[job_id].details = "Could not find Scene class in generated code"
+        jobs[job_id].duration = time.time() - jobs[job_id].start_time
         return
 
     class_name = class_name_match.group(1)
@@ -117,11 +122,13 @@ def render_animation_in_background(job_id: str, code: str):
         jobs[job_id].status = JobStatus.COMPLETED
         jobs[job_id].video_path = video_url_path
         jobs[job_id].progress = 100
+        jobs[job_id].duration = time.time() - jobs[job_id].start_time
 
     except Exception as e:
         logging.error(f"An unexpected error occurred: {e}")
         jobs[job_id].status = JobStatus.FAILED
         jobs[job_id].details = str(e)
+        jobs[job_id].duration = time.time() - jobs[job_id].start_time
     finally:
         os.remove(temp_filename)
 
