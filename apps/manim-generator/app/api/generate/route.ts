@@ -122,6 +122,7 @@ export async function POST(req: NextRequest) {
 
     // Define the Manim service URL (default to localhost if not set)
     const manimServiceUrl = process.env.NEXT_PUBLIC_PROD_API_URL || "http://localhost:8080/generate";
+    console.log("Manim Service URL:", manimServiceUrl);
 
     // Send the generated code to the Manim service for rendering
     const manimResponse = await fetch(manimServiceUrl, {
