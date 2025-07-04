@@ -1,89 +1,122 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextRequest, NextResponse } from "next/server";
 
-
-// console.log(`GEMINI_API_KEY loaded on server: ${!!process.env.GEMINI_API_KEY}`);
+// Initialize Gemini AI with free model
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
 // System prompt for instructing the AI to generate Manim code
-const systemPrompt = `# Manim Code Generation Expert
+const systemPrompt = `You are an expert Manim developer. Generate ONLY a single, complete Python script that renders successfully without partial video file errors in Manim v0.19.0.
 
-You are an expert Manim developer. Your sole task is to convert a user's description into a single, complete, and correct Manim Python script.
+THINK ABOUT THE USER'S REQUEST:
+- What is the user trying to visualize or demonstrate?
+- What details would make this animation educational and engaging?
+- What labels, titles, or explanations would be helpful?
+- How can you make this animation clear and visually appealing?
+- What natural progression or story should the animation tell?
 
-## Your Thought Process
-1.  **Deconstruct the Request:** What are the core objects and concepts in the user's description? (e.g., numbers, bars, a pendulum, a graph).
-2.  **Mobject Creation:** How will you represent these objects in Manim? (e.g., \`Rectangle\` for bars, \`Circle\` and \`Line\` for a pendulum, \`Axes\` and \`FunctionGraph\` for a function).
-3.  **Layout and Positioning:** How will the objects be arranged?
-    *   For multiple, similar objects, create them in a list comprehension and then group them immediately using \`VGroup\`.
-    *   Use \`.arrange()\` to space them out evenly.
-    *   Use \`.next_to()\` to position objects relative to each other.
-4.  **Animation Sequence:** What is the story of the animation? Plan the sequence of \`self.play(...)\
- calls. Use \`Create\`, \`Transform\`, \`FadeIn\`, \`FadeOut\`, and other animations to tell the story.
-5.  **Write the Code:** Combine the above steps into a clean, readable Python script.
+ABSOLUTE REQUIREMENTS:
+1. Return ONLY Python code in a single code block - NO explanations, NO extra text
+2. ALWAYS use proper Scene setup with construct() method
+3. NEVER use Tex() or MathTex() - causes LaTeX errors and partial video files
+4. ALWAYS use Text() for ALL text including mathematical expressions
+5. Use simple, short scene names (no special characters, no long names)
+6. Add appropriate titles, labels, and explanations to make animations educational
+7. Use natural timing - don't rush, allow viewers to understand each step
+8. NEVER use complex objects that cause partial video file errors
 
-## Critical Rules for High-Quality Code
-- **ALWAYS use \`VGroup\` for multiple objects.** Manim animations like \`Create\` and \`Transform\` work on single mobjects or \`VGroup\`, not on Python lists.
-- **ALWAYS use \`Tex\` for math.** Use raw strings and enclose the math in \`$\` signs. Example: \`Tex(r"$\\sqrt{x}$")\`. For plain numbers, \`Text\` is often better.
-- **Positioning is Key:** Use \`.next_to()\`, \`.to_edge()\`, \`.shift()\`, and \`.arrange()\` to create a clean layout.
-- **Complete Script:** The final output must be a single, complete Python script with all necessary imports and a Scene class, ready to be executed.
+MANDATORY SAFE OBJECTS ONLY:
+- Text() for ALL text (mathematical expressions, labels, titles)
+- Rectangle(), Circle(), Line(), Dot()
+- VGroup() for grouping
+- ABSOLUTELY NEVER use Axes(), NumberPlane(), Arrow(), Vector(), Graph()
 
-## Example: Bubble Sort
+MANDATORY SAFE ANIMATIONS ONLY:
+- Create(), Write(), FadeIn(), FadeOut(), Transform()
+- Simple .animate transformations (move_to, shift, scale, rotate)
+- NEVER use complex paths, move_along_path, or experimental features
 
-**Description:** Animate the sorting of an array using bubble sort.
+FORBIDDEN - CAUSES PARTIAL VIDEO FILE ERRORS:
+- Tex() or MathTex() - causes LaTeX rendering that breaks video stitching
+- Axes(), NumberPlane() - causes partial movie file errors
+- Arrow(), Vector() - use Line() instead
+- Graph(), plot() functions - causes rendering failures
+- move_along_path() - causes video composition errors
+- Complex mathematical plotting or coordinate systems
+- Special characters in scene names or text
+- Unicode symbols, emojis, or complex characters
+- Long scene names or file paths
+- Multiple complex transformations in sequence
 
-**Code:**
+COMMON MANIM ERRORS TO AVOID:
+- "partial_movie_files" errors - caused by Axes(), Graph(), MathTex()
+- "Writing x to tex_file_writing.py" - caused by any LaTeX usage
+- "ffmpeg composition errors" - caused by complex objects and paths
+- "RuntimeError: Directory 'media' does not exist" - avoid complex file operations
+- LaTeX compilation errors - use Text() for everything
+- Font errors - use only Text() with simple strings
+- Memory errors - keep animations simple with basic objects only
+- File permission errors - use simple file names and paths
+
+ANIMATION GUIDELINES:
+- Add meaningful titles and labels using Text()
+- Use appropriate wait() times between steps
+- Show step-by-step progression with simple objects
+- Include explanatory text where helpful using Text()
+- Make the animation educational and clear
+- Use colors effectively to highlight important elements
+- Position elements thoughtfully for visual clarity
+- Keep all animations simple and render-safe
+
+REQUIRED STRUCTURE:
 \`\`\`python
 from manim import *
 
-class BubbleSort(Scene):
+class SimpleScene(Scene):
     def construct(self):
-        numbers = [3, 1, 4, 1, 5, 9, 2, 6]
-        n = len(numbers)
-
-        # Create bars and labels
-        bars = VGroup()
-        for num in numbers:
-            bar = Rectangle(
-                width=0.6,
-                height=num * 0.5,
-                fill_color=BLUE,
-                fill_opacity=0.8,
-                stroke_width=0,
-            )
-            bars.add(bar)
-        
-        bars.arrange(RIGHT, buff=0.3)
-        self.play(Create(bars))
-        self.wait(0.5)
-
-        # Bubble Sort Algorithm
-        for i in range(n):
-            for j in range(0, n - i - 1):
-                # Highlight bars being compared
-                self.play(
-                    bars[j].animate.set_color(YELLOW),
-                    bars[j+1].animate.set_color(YELLOW)
-                )
-                if numbers[j] > numbers[j+1]:
-                    # Swap numbers
-                    numbers[j], numbers[j+1] = numbers[j+1], numbers[j]
-                    
-                    # Animate swap
-                    self.play(
-                        Swap(bars[j], bars[j+1])
-                    )
-                    # Manually update bars list after swap
-                    bars[j], bars[j+1] = bars[j+1], bars[j]
-
-                # Un-highlight bars
-                self.play(
-                    bars[j].animate.set_color(BLUE),
-                    bars[j+1].animate.set_color(BLUE)
-                )
-        
-        self.wait(1)
+        # Think about what the user wants to see
+        # Use ONLY Text(), Rectangle(), Circle(), Line(), Dot()
+        # Add appropriate titles, labels, and explanations
+        # Use natural timing with self.wait()
+        # Make it educational and visually appealing
+        # NEVER use Axes(), Graph(), MathTex(), or complex objects
+        pass
 \`\`\`
-`;
+
+EXAMPLES OF SAFE CODE:
+- Text("Hello World") - GOOD
+- Text("y = sin(x)") - GOOD for math expressions
+- Rectangle(width=2, height=1) - GOOD  
+- Circle(radius=1) - GOOD
+- Line(start=LEFT, end=RIGHT) - GOOD
+- self.play(Write(text)) - GOOD
+- self.wait(2) - GOOD, use natural timing
+- obj.animate.move_to(UP) - GOOD, simple movement
+
+EXAMPLES OF FORBIDDEN CODE:
+- Tex("x") - FORBIDDEN, causes partial video files
+- MathTex("y = sin(x)") - FORBIDDEN, causes partial video files
+- Axes() - FORBIDDEN, causes partial movie file errors
+- NumberPlane() - FORBIDDEN, causes rendering failures
+- Arrow() - FORBIDDEN, use Line() instead
+- graph.plot() - FORBIDDEN, causes video composition errors
+- move_along_path() - FORBIDDEN, causes partial video files
+- Complex coordinate systems - FORBIDDEN
+
+ERROR PREVENTION CHECKLIST:
+- ✓ Does this use ONLY safe objects? (Text, Rectangle, Circle, Line, Dot)
+- ✓ Does this avoid Tex() and MathTex() completely?
+- ✓ Does this avoid Axes(), Graph(), and coordinate systems?
+- ✓ Does this avoid move_along_path() and complex paths?
+- ✓ Is the scene name short and simple?
+- ✓ Will this render without partial video file errors?
+- ✓ Are all strings simple without special characters?
+- ✓ Does this include appropriate titles and labels using Text()?
+- ✓ Does this use natural timing and pacing?
+- ✓ Is this educational and clear?
+
+CRITICAL: If the user asks for mathematical plots, sine waves, or coordinate systems, create them using only basic shapes (Rectangle, Circle, Line, Dot) and Text labels. NEVER use Axes(), Graph(), or plotting functions.
+
+Remember: Return ONLY the Python code block. No explanations. Think about what the user wants to learn or see, then create an engaging, educational animation using ONLY safe objects that will render completely without partial video file errors. The code should be lighter to render within the limits of Manim v0.19.0. and with less time complexity.`;
 
 
 // POST function to handle the request, generate Manim code, and render it
@@ -101,53 +134,109 @@ export async function POST(req: NextRequest) {
     }
 
 
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    console.log("Starting AI code generation...");
+    console.log("Description:", description);
 
-    // Construct the full prompt by combining system prompt and user description
-    const prompt = `${systemPrompt}
+    // Generate content using Gemini free model
+    let code: string;
+    
+    try {
+      console.log("Calling Gemini API...");
+      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+      
+      const result = await model.generateContent(`${systemPrompt}\n\nCreate a Manim animation for: ${description}`);
+      const response = await result.response;
+      const text = await response.text();
+      
+      console.log("AI response received, length:", text.length);
 
-**Description:** ${description}
-
-**Code:**
-`;
-
-    // Generate content using the AI model
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const text = await response.text();
-
-    // Extract Python code from the response (if wrapped in code block)
-    const codeBlock = text.match(/```python\n([\s\S]*?)```/);
-    const code = codeBlock?.[1] ?? text;
-
-    // Define the Manim service URL (default to localhost if not set)
-    const manimServiceUrl = `${process.env.NEXT_PUBLIC_PROD_API_URL}/generate` || "http://localhost:8080/generate";
-    console.log("Manim Service URL:", manimServiceUrl);
-
-    // Send the generated code to the Manim service for rendering
-    const manimResponse = await fetch(manimServiceUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ code }),
-    });
-
-    // Check if the Manim service responded successfully
-    if (!manimResponse.ok) {
-      const errorData = await manimResponse.json();
-      console.error("Manim service error:", errorData);
+      // Extract Python code from the response (if wrapped in code block)
+      const codeBlock = text.match(/```python\n([\s\S]*?)```/);
+      code = codeBlock?.[1] ?? text;
+      
+      console.log("Extracted code length:", code.length);
+      
+      if (!code || code.trim().length === 0) {
+        console.error("No code generated from AI response");
+        return NextResponse.json(
+          { error: "AI failed to generate valid code" },
+          { status: 500 }
+        );
+      }
+      
+    } catch (aiError) {
+      console.error("Error during AI code generation:", aiError);
+      
+      // Check if it's a quota error
+      const errorString = String(aiError);
+      if (errorString.includes("429") || errorString.includes("quota")) {
+        return NextResponse.json(
+          { 
+            error: "API quota exceeded", 
+            details: "You've reached the daily limit for Gemini API. Please try again tomorrow or upgrade your plan.",
+            retryAfter: "24 hours"
+          },
+          { status: 429 }
+        );
+      }
+      
       return NextResponse.json(
-        { error: "Failed to render animation", details: errorData.details },
+        { error: "Failed to generate code with AI", details: String(aiError) },
         { status: 500 }
       );
     }
 
-    // Parse the Manim service response
-    const manimResult = await manimResponse.json();
+    // Define the Manim service URL (default to localhost if not set)
+    const manimServiceUrl = process.env.NEXT_PUBLIC_PROD_API_URL 
+      ? `${process.env.NEXT_PUBLIC_PROD_API_URL}/generate` 
+      : "http://localhost:8080/generate";
+    console.log("Manim Service URL:", manimServiceUrl);
+    console.log("Generated code length:", code.length);
 
-    // Return the generated code and video path
-    return NextResponse.json({ code, ...manimResult });
+    // Send the generated code to the Manim service for rendering
+    try {
+      const manimResponse = await fetch(manimServiceUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ code }),
+      });
+
+      console.log("Manim service response status:", manimResponse.status);
+      console.log("Manim service response ok:", manimResponse.ok);
+
+      // Check if the Manim service responded successfully
+      if (!manimResponse.ok) {
+        const errorText = await manimResponse.text();
+        console.error("Manim service error response:", errorText);
+        
+        let errorData;
+        try {
+          errorData = JSON.parse(errorText);
+        } catch {
+          errorData = { details: errorText };
+        }
+        
+        return NextResponse.json(
+          { error: "Failed to render animation", details: errorData.details || errorText },
+          { status: 500 }
+        );
+      }
+
+      // Parse the Manim service response
+      const manimResult = await manimResponse.json();
+      console.log("Manim service success response:", manimResult);
+
+      // Return the generated code and video path
+      return NextResponse.json({ code, ...manimResult });
+    } catch (fetchError) {
+      console.error("Error calling Manim service:", fetchError);
+      return NextResponse.json(
+        { error: "Failed to connect to Manim service", details: String(fetchError) },
+        { status: 500 }
+      );
+    }
   } catch (error) {
     // Handle any errors during the process
     console.error(error);
